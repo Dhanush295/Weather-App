@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import{ rapid_api, rapid_key, weatherApi, weatherApiKey }from '../components/apiandkeys.jsx/Config'
 import axios from "axios";
-import './Weather.css';
+
 
 // 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
 
