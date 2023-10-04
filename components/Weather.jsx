@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import{ rapid_api, rapid_key, weatherApi, weatherApiKey }from '../components/apiandkeys.jsx/Config'
 import axios from "axios";
+import './Weather.css';
 
 // 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
 
@@ -82,21 +83,44 @@ function Weather() {
           </div>
         </nav>
       </div> 
+      <div className="grid-container">
       {weather.map((data) => (
-      <WeatherData key={data.id} alldata={data} />))}      
+      <WeatherData key={Math.random()}
+       main={data.weather.main} 
+       description = {data.weather.description} 
+       name = {data.name}
+       temp = {data.main.temp}
+       temp_min = {data.main.temp_min}
+       temp_max = {data.main.temp_max}
+       pressure = {data.main.pressure}
+       humidity = {data.main.humidity}
+       speed = {data.wind.speed}
+       />))} 
+      </div>
+           
     </div>
   );
 }
 
 
-
   function WeatherData(props) {
-    console.log(props.alldata);
-  
+    console.log(props.name);
     return (
-      <div>
-        
+      <div >
+      <div className="card" style={{ width: "18rem", margin: 10 }}>
+        <div className="card-body">
+          <h5 className="card-title">{props.name}</h5>
+          <h6 className="card-subtitle mb-2 text-muted">{props.main}</h6>
+          <p className="card-text">{props.description}</p>
+          <p className="card-text">Temperature: {props.temp}°C</p>
+          <p className="card-text">Min Temperature: {props.temp_min}°C</p>
+          <p className="card-text">Max Temperature: {props.temp_max}°C</p>
+          <p className="card-text">Pressure: {props.pressure} hPa</p>
+          <p className="card-text">Humidity: {props.humidity}%</p>
+          <p className="card-text">Wind Speed: {props.speed} m/s</p>
+        </div>
       </div>
+    </div>
     );
   }
   
