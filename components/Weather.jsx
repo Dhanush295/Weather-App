@@ -7,8 +7,7 @@ import axios from "axios";
 function Weather() {
   const [cityname, setCityName] = useState("");
   const [weather, setWeather ] = useState([]);
-  let lat = '';
-  let lon = '';
+
 
   const handleSubmit = async () => {
     try {
@@ -24,15 +23,12 @@ function Weather() {
           "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
         },
       });
-  
+
       const locations = response.data.data;
-      const latitudes = locations.map((city) => city.latitude);
-      const longitudes = locations.map((city) => city.longitude);
-  
-      // Fetch weather data for each location
+      
       const weatherDataArray = await Promise.all(
-        latitudes.map(async (lat, index) => {
-          const lon = longitudes[index];
+        locations.map(async (city) => {
+          const { latitude: lat, longitude: lon } = city; 
           try {
             const response = await axios.get(`${weatherApi}weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}`);
             return response.data;
@@ -43,17 +39,14 @@ function Weather() {
         })
       );
   
-      // Filter out any null values (failed requests)
       const validWeatherData = weatherDataArray.filter((data) => data !== null);
       setWeather(validWeatherData);
     } catch (error) {
       console.error("Error fetching location data:", error);
-      // You should set an error state here to handle and display the error to the user
+      
     }
   };
   
-
-
   return (
     <div
       style={{
@@ -80,7 +73,7 @@ function Weather() {
               />
               <button
                 className="btn btn-outline-success"
-                type="button" // Change to "button" to prevent form submission
+                type="button"
                 onClick={handleSubmit}
               >
                 Search
@@ -100,10 +93,9 @@ function Weather() {
   function WeatherData(props) {
     console.log(props.alldata);
   
-    // You can render the weather data here, e.g., props.alldata.name, props.alldata.temperature, etc.
     return (
       <div>
-        {/* Render weather data here */}
+        
       </div>
     );
   }
