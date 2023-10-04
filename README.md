@@ -1,4 +1,4 @@
-# React + Vite
+# React Weather App
 
 Simple weather app which display the weather of the entered place
 
