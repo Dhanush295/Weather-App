@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import{ rapid_api, rapid_key }from '../components/apiandkeys.jsx/Config'
+import{ rapid_api, rapid_key, weatherApi, weatherApiKey }from '../components/apiandkeys.jsx/Config'
 import axios from "axios";
+
+// 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'
 
 function Weather() {
   const [cityname, setCityName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [weather, setWeather ] = useState([]);
   let lat = '';
   let lon = '';
 
   const handleSubmit = async () => {
     try {
-      setLoading(true); // Set loading to true while fetching
-      setError(null); // Clear any previous errors
-
       const response = await axios.request({
         method: "GET",
-        url: `${rapid_api}`,params: {
+        url: `${rapid_api}`,
+        params: {
           minPopulation: '10000',
           namePrefix: `${cityname}`
         },
@@ -25,21 +24,35 @@ function Weather() {
           "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
         },
       });
-
-      let location = response.data.data;
-      location.map((city)=>{
-        console.log(city.latitude);
-        lat = city.latitude
-        console.log(city.longitude);
-        lon = city.longitude
-      });
-
-      setLoading(false); 
+  
+      const locations = response.data.data;
+      const latitudes = locations.map((city) => city.latitude);
+      const longitudes = locations.map((city) => city.longitude);
+  
+      // Fetch weather data for each location
+      const weatherDataArray = await Promise.all(
+        latitudes.map(async (lat, index) => {
+          const lon = longitudes[index];
+          try {
+            const response = await axios.get(`${weatherApi}weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}`);
+            return response.data;
+          } catch (error) {
+            console.error("Error fetching weather data:", error);
+            return null;
+          }
+        })
+      );
+  
+      // Filter out any null values (failed requests)
+      const validWeatherData = weatherDataArray.filter((data) => data !== null);
+      setWeather(validWeatherData);
     } catch (error) {
-      setError("Error fetching weather data.");
-      setLoading(false); 
+      console.error("Error fetching location data:", error);
+      // You should set an error state here to handle and display the error to the user
     }
   };
+  
+
 
   return (
     <div
@@ -75,14 +88,30 @@ function Weather() {
             </form>
           </div>
         </nav>
-      </div>
+      </div> 
+      {weather.map((data) => (
+      <WeatherData key={data.id} alldata={data} />))}      
     </div>
   );
 }
 
+
+
+  function WeatherData(props) {
+    console.log(props.alldata);
+  
+    // You can render the weather data here, e.g., props.alldata.name, props.alldata.temperature, etc.
+    return (
+      <div>
+        {/* Render weather data here */}
+      </div>
+    );
+  }
+  
+  
+  
+  
+  
+  
+  
 export default Weather;
-
-
-
-
-
