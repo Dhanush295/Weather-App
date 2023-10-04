@@ -83,7 +83,7 @@ function Weather() {
           </div>
         </nav>
       </div> 
-      <div style={{display:"inline-grid", justifyContent:"center", justifyItems:"center"}}>
+      <div  style={{display:"grid", gridtemplatecolumns:" repeat(auto-fill, minmax(250px, 1fr))", gridGap: "20px", justifyItems:"center"}}>
       {weather.map((data) => (
       <WeatherData key={Math.random()}
        main={data.weather.main} 
@@ -104,10 +104,9 @@ function Weather() {
 
 
   function WeatherData(props) {
-    console.log(props.name);
     return (
       <div className="card" style={{ width: "18rem", margin: 10 }}>
-          <div className="card-body col-sm-8">
+          <div className="card-body ">
             <h5 className="card-title">{props.name}</h5>
             <h6 className="card-subtitle mb-2 text-muted">{props.main}</h6>
             <p className="card-text">{props.description}</p>
@@ -121,11 +120,4 @@ function Weather() {
         </div>  
     );
   }
-  
-
-  
-  
-  
-  
-  
 export default Weather;
